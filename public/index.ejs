@@ -1,0 +1,45 @@
+<%- include('layouts/header') -%>
+<h1>Paris S.A.</h1>
+<h3>Lista de productos</h3>
+<% if(dataCar.length > 0) { %>
+    <!-- GENERACIÓN DE EJEMPLO DEL CARRITO -->
+    <p>Existe carrito con id: <%= dataCar[0].id %></p>
+    <h5><a href="/carrito">Ver carrito</a></h5>
+    <h5><a class="btn btn-danger" onclick="eliminarCarrito('<%= dataCar[0].id %>')">Eliminar carrito</a></h5>
+<% } %>
+<table class="table table-bordered table-striped" id="result">
+    <thead>
+        <th>Id</th>
+        <th>Código</th>
+        <th>Nombre</th>
+        <th>Descripción</th>
+        <th>Precio</th>
+        <th>Imagen</th>
+        <th>Sotck</th>
+        <th>Fecha</th>
+        <th>Carrito</th>
+    </thead>
+    <tbody>
+        <% data.forEach(function(unique) { %>
+        <tr>
+            <td><%= unique.id %></td>
+            <td><%= unique.code %></td>
+            <td><%= unique.title %></td>
+            <td><%= unique.description %></td>
+            <td><%= unique.price %></td>
+            <td><img src="<%= unique.thumbnail %>" style="width: 25%" />
+            <td><%= unique.stock %></td>
+            <td><%= unique.timestamp %></td>
+            <td>
+                <% if(dataCar.length > 0) { %>
+                    <a class="btn btn-outline-success" onclick="agregarProducto('<%= unique.id %>', '<%= dataCar[0].id %>')">Agregar</a> - 
+                    <a class="btn btn-outline-warning" onclick="eliminarProducto('<%= unique.id %>', '<%= dataCar[0].id %>')">Sacar</a> 
+                <% } else { %>
+                    <a class="btn btn-outline-success" onclick="crearCarrito('<%= unique.id %>')">Agregar al Carrito</a>
+                <% } %>
+            </td>
+        </tr>
+        <% }); %>
+    </tbody>
+</table>
+<%- include('layouts/footer') -%>
