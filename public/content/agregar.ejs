@@ -1,0 +1,46 @@
+<%- include('../layouts/header') -%>
+<div id="accionIngresar" class="row">
+    <h3 class="col-sm-12">Ingresar nuevo producto</h3>
+    <div class="row">
+        <div class="col-sm-6"><a href="/administrador?admin=true">Regresar</a></div>
+    </div>
+    <form id="formProductoAdd">
+        <div class="row">
+            <div class="col">
+                <input class="form-control" type="text" name="title" id="title"
+                    placeholder="Ingrese nombre del producto">
+            </div>
+            <div class="col">
+                <input class="form-control" type="number" name="price" id="price"
+                    placeholder="Ingrese precio del producto">
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col">
+                <input class="form-control" type="text" name="description" id="description"
+                    placeholder="Ingrese la descripcion del producto">
+            </div>
+            <div class="col">
+                <input class="form-control" type="number" name="stock" id="stock"
+                    placeholder="Ingrese el stock del producto">
+            </div>
+            <select class="form-control" name="category" id="categoriaProd">
+                <% datCat.forEach(function(unique) { %>
+                    <option value="<%= unique.name %>"><%= unique.name %></option>
+                <% }); %>
+            </select>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col">
+                <label for="thumbnail">Imagen del producto</label>
+                <input class="form-control" type="file" name="thumbnail" id="thumbnail">
+            </div>
+            <div class="col">
+                <input class="btn btn-primary col-sm-4" type="button" value="Enviar" onclick="EnviarDatos()">
+            </div>
+        </div>
+    </form>
+</div>
+<%- include('../layouts/footer') -%>

@@ -1,0 +1,20 @@
+<%- include('../layouts/header') -%>
+<div id="accionEditar" class="row">
+    <h3 class="col-sm-12">Configuración</h3>
+    <a href="/">Regresar</a>
+    <div>
+        <ul>
+            <li>Modo: <%= data.mode %></li>
+            <li>Puerto: <%= data.port %></li>
+            <li>DAO: <%= data.dao %></li>
+            <li>Args: <%= data.args %></li>
+            <li>Platform: <%= data.platform %></li>
+            <li>Versión: <%= data.version %></li>
+            <li>Path: <%= data.path %></li>
+            <li>ID: <%= data.id %></li>
+            <li>Folder: <%= data.folder %></li>
+            <li>RSS: <%= data.rss %></li>
+        </ul>
+    </div>
+</div>
+<%- include('../layouts/footer') -%>

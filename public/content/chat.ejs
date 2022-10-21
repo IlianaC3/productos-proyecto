@@ -1,0 +1,49 @@
+<%- include('../layouts/header') -%>
+
+<h3>Centro de Mensajería</h3>
+
+<div class="row">
+    <div class="col-sm-6"><a href="/">Regresar</a></div>
+    <div class="col-sm-6"><a href="/chat/<%= user.email %>">Mis mensajes</a></div>
+</div>
+<!-- AGREGAR MENSAJE -->
+<div id="accionMensaje" class="row container">
+    <h5>Nuevo mensaje</h5>
+    <form>
+        <div class="row">
+            <div class="col-sm-3">
+                <input class="form-control" type="email" name="email" id="email" required="required"
+                    placeholder="Ingrese email" value="<%= user.email %>" readonly>
+            </div>
+            <div class="col-sm-3">
+                <input class="form-control" type="text" name="name" id="name" required="required"
+                    placeholder="Ingrese nombre" value="<%= data[0].nombre %>" readonly>
+            </div>
+            <div class="col-sm-3">
+                <input class="form-control" type="number" name="age" id="age" required="required"
+                    placeholder="Ingrese edad" value="<%= data[0].edad %>" readonly>
+            </div>
+            <div class="col-sm-3">
+                <input class="form-control" type="text" name="avatar" id="avatar" required="required"
+                    placeholder="Ingrese avatar" value="<%= data[0].foto %>" readonly>
+            </div>
+            <div class="col-sm-6">
+                <input class="form-control" type="text" name="message" id="message" required="required" 
+                    placeholder="Mensaje">
+            </div>
+            <div class="col-3">
+                <input class="btn btn-primary col-sm-4" type="button" value="Enviar" onclick="enviarMensaje()">
+            </div>
+        </div>
+    </form>
+</div>
+<hr>
+<!-- Lista de mensajes -->
+<div class="row container">
+    <h5>Mensajes</h5>
+    <ul id="listMensajes" class="scroll-y">
+
+    </ul>
+</div>
+
+<%- include('../layouts/footer') -%>

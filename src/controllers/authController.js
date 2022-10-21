@@ -1,0 +1,13 @@
+class PublicAuth {
+    async publicAuthorization(req, res, next) {
+        if (req.isAuthenticated()) {
+            next()
+        } else {
+            res.redirect('/login')
+        }
+    }
+    
+}
+
+
+module.exports = PublicAuth

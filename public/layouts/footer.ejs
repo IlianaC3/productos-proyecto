@@ -1,59 +1,164 @@
 </div>
 </body>
+<script src="/socket.io/socket.io.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"
     integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"
     integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13"
     crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/normalizr@3.6.1/dist/normalizr.browser.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.3/moment.js" integrity="sha512-bqapgtfTAZwLEfvkONLanNjF3avvKbrcB55QT5I6FDx/N0n/oqpn99bjJVvHdYQsVEVY22ViXJdtdPJYWuY9DA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
-    function EnviarDatos() {
-        let data = {
-            title: $('#accionIngresar #title').val(),
-            description: $('#accionIngresar #description').val(),
-            price: $('#accionIngresar #price').val(),
-            stock: $('#accionIngresar #stock').val(),
-            thumbnail: $('#accionIngresar #thumbnail').val(),
+const socket = io.connect();
+socket.on('listMessages', data => {
+
+    console.log("entra", data);
+    const autoresSchema = new normalizr.schema.Entity('autor');
+    const chatsSchema = new normalizr.schema.Entity('mensajes', {
+        autor: autoresSchema
+    });
+
+    const denormalizado = normalizr.denormalize(data.result, chatsSchema, data.entities);
+
+    let html = ``;
+    denormalizado.mensajes.forEach(mess => {
+                html += `<li class="li-style"><span class="email">${mess.autor.id}</span> <span><i>`;
+                 if(mess.autor.isSystem == false) {
+                    html += 'Usuario';
+                 } else {
+                    html += 'Sistema';
+                }
+                html += `</i></span> (<span class="time">${mess.timestamp}</span>): <span class="message">${mess.text}</span> <img src="${mess.autor.avatar}" style="width: 50px; height: 50px; border-radius: 50%;">`}
+            );
+    $('#listMensajes').html(html);
+});
+
+function enviarMensaje() {
+    moment.locale();
+    if ($('#email').val() !== '' && $('#message').val() !== '') {
+        let dataAutor = {
+            email: $('#email').val(),
+            nombre: $('#name').val(),
+            edad: $('#age').val(),
+            foto: $('#avatar').val(),
         }
-        axios.post('/api/productos', data)
+        let data = {
+            autor: dataAutor,
+            text: $('#message').val(),
+        }
+        socket.emit('messages', data);
+        $('#message').val('');
+    } else {
+        alert("Complete los campos")
+    }
+    
+};
+
+function getBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+  });
+}
+
+async function registroFinal(fileFinal) {
+        const form = document.querySelector("#formSignup");
+        console.log(form);
+        const formData = new FormData(form);
+        axios.post('/api/user/signup', formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            })
+            .then(resp => {
+                // console.log(resp)
+                if(resp.status === 200) {
+                    $('#emailPerson').val('');
+                    $('#namePerson').val('');
+                    $('#addressPerson').val('');
+                    $('#prefixNumber').val('');
+                    $('#phonePerson').val('');
+                    $('#agePerson').val('');
+                    $('#photoPerson').val('');
+                    $('#passwordPerson').val('');
+                    let userNew = {
+                        username: resp.data.result.email,
+                        password: resp.data.result.password
+                    }
+                    console.log(userNew)
+                    axios.post('/api/user/login', userNew).then(resp => {
+                        window.location.href = "/"
+                    }).catch(error => console.error(error));
+                } else {
+                    alert("No se registró el usuario, intenta más tarde");
+                    window.location.href = "/"
+                }
+            })
+            .catch(error => console.error(error));
+    }
+
+    function EnviarDatos() {
+        const form = document.querySelector("#formProductoAdd");
+        // console.log(form);}
+        const formData = new FormData(form);
+        // console.log(formData)
+        axios.post('/api/productos?admin=true', formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            })
             .then(resp => {
                 $('#accionIngresar #title').val('');
                 $('#accionIngresar #price').val('');
                 $('#accionIngresar #thumbnail').val('');
                 $('#accionIngresar #description').val('');
                 $('#accionIngresar #stock').val('');
+                $('#accionIngresar #categoriaProd').val(''),
                 alert(resp.data.result)
+                window.location.reload(true);
                 window.location.href = "/administrador?admin=true"
+                
             })
             .catch(error => console.error(error));
     }
 
     function EnviarDatosEditar() {
+        const form = document.querySelector("#formProductosUpd");
+        const formData = new FormData(form);
         let id = $('#accionEditar #id').val()
-        let data = {
-            title: $('#accionEditar #titleE').val(),
-            price: $('#accionEditar #priceE').val(),
-            thumbnail: $('#accionEditar #thumbnailE').val(),
-            description: $('#accionEditar #descriptionE').val(),
-            stock: $('#accionEditar #stockE').val(),
-        }
-        axios.put(`/api/productos/${id}`, data)
+        axios.put(`/api/productos/${id}?admin=true`, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            })
             .then(resp => {
                 $('#accionEditar #titleE').val('');
                 $('#accionEditar #priceE').val('');
                 $('#accionEditar #thumbnailE').val('');
-                $('#accionEditar #descriptionE').val(''),
-                $('#accionEditar #stockE').val(''),
+                $('#accionEditar #descriptionE').val('');
+                $('#accionEditar #stockE').val('');
                 $('#accionEditar #id').val('');
+                $('#accionEditar #categoriaProd').val('');
                 alert(resp.data.result)
+                window.location.reload(true);
                 window.location.href = "/administrador?admin=true"
             })
             .catch(error => console.error(error));
     }
 
+    function BuscarCategoriasProductos() {
+        let data = $('#categoriaProd').val();
+        if (data != 'Categorias') {
+            window.location.href = `/productos/${data}`
+        }
+        
+    }
+
     function eliminarProducto(id) {
-        axios.delete(`/api/productos/${id}`)
+        axios.delete(`/api/productos?admin=true${id}`)
             .then(resp => {
                 alert(resp.data.result)
                 window.location.href = "/administrador?admin=true"
@@ -64,9 +169,18 @@
     //Carrito de compras
     function crearCarrito(id) {
         let data = {
-            id_prod: id,
-        }
+            id_prod: id
+        };
         axios.post('/api/carrito', data)
+            .then(resp => {
+                alert(resp.data.result)
+                window.location.href = "/"
+            })
+            .catch(error => console.error(error));
+    }
+
+    function comprarCarrito(id) {
+        axios.put('/api/carrito/'+id)
             .then(resp => {
                 alert(resp.data.result)
                 window.location.href = "/"
@@ -96,6 +210,7 @@
     }
 
     function eliminarProducto(id_prod, id_car) {
+        console.log(id_car, id_prod)
         axios.delete(`/api/carrito/${id_car}/productos/${id_prod}`)
             .then(resp => {
                 alert(resp.data.result)

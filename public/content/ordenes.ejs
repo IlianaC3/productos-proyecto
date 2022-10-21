@@ -1,0 +1,33 @@
+<%- include('../layouts/header') -%>
+<h1>Paris S.A.</h1>
+<h3>Carrito de compras</h3>
+<table class="table table-bordered table-striped" id="result">
+    <thead>
+        <th>Id</th>
+        <th>Código</th>
+        <th>Usuario</th>
+        <th>Estado</th>
+        <th>Total</th>
+        <th>Productos</th>
+        <th>Fecha</th>
+    </thead>
+    <tbody>
+        <% data.forEach(function(unique) { %>
+        <tr>
+            <td><%= unique.id %></td>
+            <td><%= unique.code %></td>
+            <td><%= unique.user %></td>
+            <td><%= unique.estado %></td>
+            <td><%= unique.total %></td>
+            <td>
+                <% unique.productos.forEach(function(producto) { %> 
+                    <li><%= producto.title %> Cantidad: <%= producto.stock %> </li> 
+                <% }); %>
+            </td>
+            <td><%= unique.timestamp %></td>
+        </tr>
+        <% }); %>
+    </tbody>
+</table>
+<h5><a href="/">Regresar</a></h5>
+<%- include('../layouts/footer') -%>
