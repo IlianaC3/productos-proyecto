@@ -11,8 +11,7 @@
         <th>Descripción</th>
         <th>Precio</th>
         <th>Imagen</th>
-        <th>Sotck</th>
-        <th>Fecha</th>
+        <th>Cantidad</th>
         <th>Carrito</th>
     </thead>
     <tbody>
@@ -24,8 +23,7 @@
             <td><%= unique.description %></td>
             <td><%= unique.price %></td>
             <td><img src="<%= unique.thumbnail %>" style="width: 25%" />
-            <td><%= unique.stock %></td>
-            <td><%= unique.timestamp %></td>
+            <td><%= unique.quantity %></td>
             <td>
                 <a class="btn btn-outline-warning" onclick="eliminarProducto('<%= unique.id %>', '<%= data[0].id %>')">Sacar</a> 
             </td>

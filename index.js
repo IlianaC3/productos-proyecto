@@ -3,8 +3,6 @@ require('dotenv').config();
 const cluster = require('cluster');
 const app = require('./src/utils/expressInit')
 const os = require('os');
-const util = require('util');
-const MongoStore = require('connect-mongo');
 
 const server = http.createServer(app);
 //Websocket
@@ -25,7 +23,7 @@ const numeroCpus = os.cpus().length;
 const processId = process.pid;
 const isMaster = cluster.isMaster;
 
-if (cluster.isMaster && mode === 'CLUSTER') {
+if (isMaster && mode === 'CLUSTER') {
    for (let i = 0; i < numeroCpus; i++) {
      cluster.fork();
    }

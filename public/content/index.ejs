@@ -41,6 +41,7 @@
         <th>Imagen</th>
         <th>Sotck</th>
         <th>Fecha</th>
+        <th>Cantidad</th>
         <th>Carrito</th>
     </thead>
     <tbody>
@@ -54,6 +55,7 @@
             <td><img src="<%= unique.thumbnail %>" style="width: 25%" />
             <td><%= unique.stock %></td>
             <td><%= unique.timestamp %></td>
+            <td><input type="number" name="cantidad" id="cantidadProducto_<%= unique.id %>" required></td>
             <td>
                 <% if(dataCar.length > 0) { %>
                     <% if(dataCar[0].productos.findIndex(obj => obj.code == unique.code) > -1) { %>

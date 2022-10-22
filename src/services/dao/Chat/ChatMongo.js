@@ -2,7 +2,7 @@ const { collMensaje, collUsuarios } = require('../../db/collections')
 const { parseJSON } = require('../../../utils/functions');
 const { connectionFinal } = require('../../db/connections')
 const chatsNorm = require('../../../utils/normalizer')
-
+const logger = require('../../../utils/logger');
 
 class Contenedor {
     constructor() {
@@ -31,8 +31,8 @@ class Contenedor {
             let doc = await this.mensajesColl.create(this.object);
             doc = parseJSON(doc)
             return 'Mensaje enviado' + doc
-        } catch (error) {
-            console.log(e);
+        } catch (e) {
+            logger.error(`No se puede guardar mensaje ${chat.text} de ${chat.autor.email} por error: ${e}`)
             return undefined;
         }
     }
@@ -41,10 +41,11 @@ class Contenedor {
         try {
             connectionFinal();
             let docs = await this.mensajesColl.find({}, { __v: 0 }).lean()
-            console.log("esta es el resultado", docs)
+            // console.log("esta es el resultado", docs)
             docs = docs.map(parseJSON)
             return chatsNorm(docs)
         } catch (error) {
+            logger.error(`No se pueden encontrar los mensajes de chat por error: ${e}`)
             return undefined;
         }
     }
@@ -53,10 +54,11 @@ class Contenedor {
         try {
             connectionFinal();
             let docs = await this.mensajesColl.find({ 'autor.id': id }, { __v: 0 })
-            console.log("esta es el resultado individual", docs)
+            // console.log("esta es el resultado individual", docs)
             docs = docs.map(parseJSON)
             return docs
         } catch (error) {
+            logger.error(`No se pueden encontrar los mensajes de usuario ${id} por error: ${e}`)
             return undefined;
         }
     }

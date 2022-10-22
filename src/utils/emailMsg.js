@@ -354,11 +354,11 @@ const sendMailRegistration = async function (data) {
   });
 }
 
-const sendMailShop = async function (producto, usuario) {
-  console.log(producto, usuario)
+const sendMailShop = async function (orden, usuario) {
+  console.log(orden, usuario)
   let productosArr = '';
-  producto[0].productos.forEach(producto => {
-    let prodHTML = `<p><b>Producto:</b> ${producto.title} - ${producto.price}</p>`
+  orden.productos.forEach(producto => {
+    let prodHTML = `<p><b>Producto:</b> ${producto.title} - ${producto.price} - ${producto.quantity}</p>`
     productosArr += prodHTML
   });
   let html = `
@@ -376,7 +376,10 @@ const sendMailShop = async function (producto, usuario) {
                       <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                         <tr>
                           <td>
-                            <p>Nuevo pedido de ${usuario[0].nombre} - ${usuario[0].email}</p>
+                            <p>Nuevo pedido de ${usuario.nombre} - ${usuario.email}</p>
+                            <p>Direccion: ${orden.direccion}</p>
+                            <p>Total: ${orden.total}</p>
+                            <p>Fecha: ${orden.timestamp}</p>
                             <p><b>Productos:</b></p>
                             <p>${productosArr}</p>
                           </td>
@@ -390,7 +393,7 @@ const sendMailShop = async function (producto, usuario) {
   let mailOptions = {
     from: "'Shop Paris'<no-reply@shop.com>",
     to: admin,
-    subject: `Nuevo pedido de ${usuario[0].nombre} - ${usuario[0].email} `,
+    subject: `Nuevo pedido de ${usuario.nombre} - ${usuario.email} `,
     html: html,
     attachments: []
   };
@@ -407,14 +410,14 @@ const sendMailShop = async function (producto, usuario) {
 
 const sendMsgShop = async function (producto, usuario) {
   let productosArr = '';
-  producto[0].productos.forEach(producto => {
+  producto.productos.forEach(producto => {
     let prodHTML = `${producto.title} - ${producto.price}, `
     productosArr += prodHTML
   });
   client.messages
     .create({
       from: 'whatsapp:+14155238886 ',
-      body: `${usuario[0].nombre} - ${usuario[0].email} ha realizado una compra, Productos: ${productosArr}`,
+      body: `${usuario.nombre} - ${usuario.email} ha realizado una compra, Productos: ${productosArr}`,
       to: `whatsapp:+56951697513`
     })
     .then(message => console.log(message.sid));
@@ -424,8 +427,8 @@ const sendMsgShopAdmin = async function (usuario) {
   client.messages
     .create({
       from: 'whatsapp:+14155238886 ',
-      body: `Hola! ${usuario[0].nombre} Tu pedido está en curso`,
-      to: `whatsapp:+${usuario[0].telefono}`
+      body: `Hola! ${usuario.nombre} Tu pedido está en curso`,
+      to: `whatsapp:+${usuario.telefono}`
     })
     .then(message => console.log(message.sid));
 }

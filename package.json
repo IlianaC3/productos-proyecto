@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Iliana Paris",
@@ -32,5 +33,8 @@
     "socket.io": "^4.5.2",
     "twilio": "^3.81.0",
     "uniqid": "^5.4.0"
+  },
+  "engines": {
+    "node": "16.x"
   }
 }

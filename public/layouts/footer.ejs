@@ -8,74 +8,77 @@
     integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13"
     crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/normalizr@3.6.1/dist/normalizr.browser.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.3/moment.js" integrity="sha512-bqapgtfTAZwLEfvkONLanNjF3avvKbrcB55QT5I6FDx/N0n/oqpn99bjJVvHdYQsVEVY22ViXJdtdPJYWuY9DA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.3/moment.js"
+    integrity="sha512-bqapgtfTAZwLEfvkONLanNjF3avvKbrcB55QT5I6FDx/N0n/oqpn99bjJVvHdYQsVEVY22ViXJdtdPJYWuY9DA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
-const socket = io.connect();
-socket.on('listMessages', data => {
+    const socket = io.connect();
+    socket.on('listMessages', data => {
 
-    console.log("entra", data);
-    const autoresSchema = new normalizr.schema.Entity('autor');
-    const chatsSchema = new normalizr.schema.Entity('mensajes', {
-        autor: autoresSchema
+        console.log("entra", data);
+        const autoresSchema = new normalizr.schema.Entity('autor');
+        const chatsSchema = new normalizr.schema.Entity('mensajes', {
+            autor: autoresSchema
+        });
+
+        const denormalizado = normalizr.denormalize(data.result, chatsSchema, data.entities);
+
+        let html = ``;
+        denormalizado.mensajes.forEach(mess => {
+            html += `<li class="li-style"><span class="email">${mess.autor.id}</span> <span><i>`;
+            if (mess.autor.isSystem == false) {
+                html += 'Usuario';
+            } else {
+                html += 'Sistema';
+            }
+            html += `</i></span> (<span class="time">${mess.timestamp}</span>): <span class="message">${mess.text}</span> <img src="${mess.autor.avatar}" style="width: 50px; height: 50px; border-radius: 50%;">`
+        }
+        );
+        $('#listMensajes').html(html);
     });
 
-    const denormalizado = normalizr.denormalize(data.result, chatsSchema, data.entities);
-
-    let html = ``;
-    denormalizado.mensajes.forEach(mess => {
-                html += `<li class="li-style"><span class="email">${mess.autor.id}</span> <span><i>`;
-                 if(mess.autor.isSystem == false) {
-                    html += 'Usuario';
-                 } else {
-                    html += 'Sistema';
-                }
-                html += `</i></span> (<span class="time">${mess.timestamp}</span>): <span class="message">${mess.text}</span> <img src="${mess.autor.avatar}" style="width: 50px; height: 50px; border-radius: 50%;">`}
-            );
-    $('#listMensajes').html(html);
-});
-
-function enviarMensaje() {
-    moment.locale();
-    if ($('#email').val() !== '' && $('#message').val() !== '') {
-        let dataAutor = {
-            email: $('#email').val(),
-            nombre: $('#name').val(),
-            edad: $('#age').val(),
-            foto: $('#avatar').val(),
+    function enviarMensaje() {
+        moment.locale();
+        if ($('#email').val() !== '' && $('#message').val() !== '') {
+            let dataAutor = {
+                email: $('#email').val(),
+                nombre: $('#name').val(),
+                edad: $('#age').val(),
+                foto: $('#avatar').val(),
+            }
+            let data = {
+                autor: dataAutor,
+                text: $('#message').val(),
+            }
+            socket.emit('messages', data);
+            $('#message').val('');
+        } else {
+            alert("Complete los campos")
         }
-        let data = {
-            autor: dataAutor,
-            text: $('#message').val(),
-        }
-        socket.emit('messages', data);
-        $('#message').val('');
-    } else {
-        alert("Complete los campos")
+
+    };
+
+    function getBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
     }
-    
-};
 
-function getBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = error => reject(error);
-  });
-}
-
-async function registroFinal(fileFinal) {
+    async function registroFinal(fileFinal) {
         const form = document.querySelector("#formSignup");
         console.log(form);
         const formData = new FormData(form);
         axios.post('/api/user/signup', formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                },
-            })
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        })
             .then(resp => {
                 // console.log(resp)
-                if(resp.status === 200) {
+                if (resp.status === 200) {
                     $('#emailPerson').val('');
                     $('#namePerson').val('');
                     $('#addressPerson').val('');
@@ -106,10 +109,10 @@ async function registroFinal(fileFinal) {
         const formData = new FormData(form);
         // console.log(formData)
         axios.post('/api/productos?admin=true', formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                },
-            })
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        })
             .then(resp => {
                 $('#accionIngresar #title').val('');
                 $('#accionIngresar #price').val('');
@@ -117,10 +120,10 @@ async function registroFinal(fileFinal) {
                 $('#accionIngresar #description').val('');
                 $('#accionIngresar #stock').val('');
                 $('#accionIngresar #categoriaProd').val(''),
-                alert(resp.data.result)
+                    alert(resp.data.result)
                 window.location.reload(true);
                 window.location.href = "/administrador?admin=true"
-                
+
             })
             .catch(error => console.error(error));
     }
@@ -130,10 +133,10 @@ async function registroFinal(fileFinal) {
         const formData = new FormData(form);
         let id = $('#accionEditar #id').val()
         axios.put(`/api/productos/${id}?admin=true`, formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                },
-            })
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        })
             .then(resp => {
                 $('#accionEditar #titleE').val('');
                 $('#accionEditar #priceE').val('');
@@ -154,11 +157,11 @@ async function registroFinal(fileFinal) {
         if (data != 'Categorias') {
             window.location.href = `/productos/${data}`
         }
-        
+
     }
 
-    function eliminarProducto(id) {
-        axios.delete(`/api/productos?admin=true${id}`)
+    function eliminarProductoAdmin(id) {
+        axios.delete(`/api/productos/${id}?admin=true`)
             .then(resp => {
                 alert(resp.data.result)
                 window.location.href = "/administrador?admin=true"
@@ -168,19 +171,27 @@ async function registroFinal(fileFinal) {
 
     //Carrito de compras
     function crearCarrito(id) {
-        let data = {
-            id_prod: id
-        };
-        axios.post('/api/carrito', data)
-            .then(resp => {
-                alert(resp.data.result)
-                window.location.href = "/"
-            })
-            .catch(error => console.error(error));
+        if ($('#cantidadProducto_' + id).val() != '' || $('#cantidadProducto_' + id).val() > 0) {
+            let cantidad = $('#cantidadProducto_' + id).val();
+            let data = {
+                id_prod: id,
+                cantidad: cantidad
+            };
+            axios.post('/api/carrito', data)
+                .then(resp => {
+                    $('#cantidadProducto' + id).val('');
+                    alert(resp.data.result)
+                    window.location.href = "/"
+                })
+                .catch(error => console.error(error));
+        } else {
+            alert("Debe agregar una cantidad del producto")
+        }
+
     }
 
     function comprarCarrito(id) {
-        axios.put('/api/carrito/'+id)
+        axios.put('/api/carrito/' + id)
             .then(resp => {
                 alert(resp.data.result)
                 window.location.href = "/"
@@ -189,7 +200,7 @@ async function registroFinal(fileFinal) {
     }
 
     function eliminarCarrito(id) {
-        axios.delete('/api/carrito/'+id)
+        axios.delete('/api/carrito/' + id)
             .then(resp => {
                 alert(resp.data.result)
                 window.location.href = "/"
@@ -198,15 +209,24 @@ async function registroFinal(fileFinal) {
     }
 
     function agregarProducto(id_prod, id_car) {
-        let data = {
-            id_prod: id_prod
+        console.log($('#cantidadProducto_' + id_prod).val())
+        if ($('#cantidadProducto_' + id_prod).val() != '' || $('#cantidadProducto_' + id_prod).val() > 0) {
+            let cantidad = $('#cantidadProducto_' + id_prod).val();
+            console.log("funciona", $('#cantidadProducto_').val())
+            let data = {
+                id_prod: id_prod,
+                cantidad: cantidad
+            }
+            axios.post(`/api/carrito/${id_car}/productos`, data)
+                .then(resp => {
+                    $('#cantidadProducto_' + id_prod).val('');
+                    alert(resp.data.result)
+                    window.location.href = "/"
+                })
+                .catch(error => console.error(error));
+        } else {
+            alert("Debe agregar una cantidad para el producto")
         }
-        axios.post(`/api/carrito/${id_car}/productos`, data)
-            .then(resp => {
-                alert(resp.data.result)
-                window.location.href = "/"
-            })
-            .catch(error => console.error(error));
     }
 
     function eliminarProducto(id_prod, id_car) {

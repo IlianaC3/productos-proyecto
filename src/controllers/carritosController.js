@@ -29,25 +29,35 @@ class CarritoController {
     }
 
     async saveCarrito(req, res, next) {
-        let { id_prod } = req.body;
+        let { id_prod, cantidad } = req.body;
         let user = req.user;
         let nuevoProducto = {
-            id_prod
+            id_prod,
+            cantidad
         }
-        carritosDao.save(nuevoProducto, user).then(result => {
-            if (result !== undefined) {
-		        logger.info(`${result} de usuario ${user.email}`)
-                res.status(200).json({
-                    message: `Nuevo Carrito`,
-                    result: result
-                });
-            } else {
-                logger.error(`No se puede crear carrito de usuario ${user.email}`)
-                res.status(404).json({
-                    error: `No se pudo guardar el Carrito`,
-                });
-            }
-        });
+        console.log(nuevoProducto)
+        if (cantidad != '' && cantidad > 0) {
+            carritosDao.save(nuevoProducto, user).then(result => {
+                if (result !== undefined) {
+                    logger.info(`${result} de usuario ${user.email}`)
+                    res.status(200).json({
+                        message: `Nuevo Carrito`,
+                        result: result
+                    });
+                } else {
+                    logger.error(`No se puede crear carrito de usuario ${user.email}`)
+                    res.status(404).json({
+                        error: `No se pudo guardar el Carrito`,
+                    });
+                }
+            });
+        } else {
+            logger.error(`No se puede crear carrito de usuario ${user.email} porque la cantidad no es válida para producto ${id_prod}`)
+            res.status(201).json({
+                error: `No se pudo guardar el Carrito porque cantidad no es válida`,
+            });
+        }
+
     }
 
     async deleteCarrito(req, res, next) {
@@ -97,26 +107,36 @@ class CarritoController {
 
     async saveProductoCarrito(req, res, next) {
         let id = req.params.id;
-        let { id_prod } = req.body;
+        let { id_prod, cantidad } = req.body;
         let editarCarrito = {
-            id_prod
+            id_prod,
+            cantidad
         }
-        let user = req.user;
-        carritosDao.addProductsById(id, editarCarrito, user.email).then(result => {
-            // console.log(result)
-            if (result !== undefined) {
-                logger.info(`Editar Carrito: ${result}`)
-                res.status(200).json({
-                    message: `Editar Carrito ${id}`,
-                    result: result
-                });
-            } else {
-                logger.error(`No se puede editar carrito ${id} con nuevos productos`)
-                res.status(404).json({
-                    error: `No se pudo modificar el Carrito`,
-                });
-            }
-        });
+        if (cantidad != '' && cantidad > 0) {
+            console.log("editar carrito", editarCarrito)
+            let user = req.user;
+            carritosDao.addProductsById(id, editarCarrito, user.email).then(result => {
+                // console.log(result)
+                if (result !== undefined) {
+                    logger.info(`Editar Carrito: ${result}`)
+                    res.status(200).json({
+                        message: `Editar Carrito ${id}`,
+                        result: result
+                    });
+                } else {
+                    logger.error(`No se puede editar carrito ${id} con nuevos productos`)
+                    res.status(404).json({
+                        error: `No se pudo modificar el Carrito`,
+                    });
+                }
+            });
+        } else {
+            logger.error(`No se puede editar carrito de usuario ${user.email} porque la cantidad no es válida`)
+            res.status(201).json({
+                error: `No se pudo editar el Carrito porque cantidad no es válida`,
+            });
+        }
+
     }
 
     async updateCarrito(req, res, next) {
@@ -189,7 +209,7 @@ class CarritoController {
     }
 
     async ordenesAll(req, res, next) {
-        if(req.query.admin) {
+        if (req.query.admin) {
             carritosDao.findOrdenesAll().then(result => {
                 if (result !== undefined) {
                     if (result === null) {

@@ -39,4 +39,8 @@ views.get('/chat/:email', publicAuthorization.publicAuthorization, Front.ChatInd
 //Configuración de Sistema
 views.get('/config', Front.ConfigSystem)
 
+//error y warnings
+views.get('/errorLog', Front.ErrorLog)
+views.get('/warningLog', Front.WarningLog)
+
  module.exports = views;

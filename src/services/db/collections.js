@@ -26,6 +26,7 @@ const collCategoria = dataB == 'mongodb' || dataB == 'mongodbAtlas' ? mongoose.m
 const collCarrito = dataB == 'mongodb' || dataB == 'mongodbAtlas' ?  mongoose.model('carritos', {
     timestamp: { type: Date, default: new Date(), required: true },
     user: { type: String, required: true },
+    direccion: { type: String, required: true },
     comprado: { type: Boolean, required: true },
     productos: { type: [], required: true }
 }) : null;
@@ -35,6 +36,7 @@ const collOrdenes = dataB == 'mongodb' || dataB == 'mongodbAtlas' ?  mongoose.mo
     user: { type: String, required: true },
     code: { type: String, required: true },
     estado: { type: String, required: true },
+    direccion: { type: String, required: true },
     total:  { type: Number, required: true },
     productos: { type: [], required: true }
 }) : null;

@@ -1,7 +1,7 @@
-require('dotenv').config();
-const os = require('os');
 const { carritosDao, usuariosDao, productosDao, chatDao } = require('../services/index');
 const phones = require('../utils/countryCodes.json');
+const { readFileLog } = require('../utils/fs');
+const { dataConfig } = require('../utils/configData');
 const logger = require('../utils/logger');
 
 class Front {
@@ -21,7 +21,7 @@ class Front {
     }
 
     async Productos(req, res) {
-        logger.info(`${req.user.email} ingresa a productos`)
+        logger.info(`${req.user.email} ingresa a productos por categoria`)
         let user = req.user;
         let data = req.params.categoria;
         const productos = await productosDao.getProductoByCategory(data).then(result => { if(result == null) {
@@ -146,19 +146,41 @@ class Front {
     async ConfigSystem(req, res) {
         if (req.query.admin) {
             logger.info("Usuario revisa configuración de sistema")
-            let config = {
-                mode: process.env.MODE,
-                port: process.env.PORT,
-                dao: process.env.DAO,
-                args: process.argv,
-                platform: process.platform,
-                version: process.version,
-                path: process.execPath,
-                id: process.pid,
-                folder: process.cwd(),
-                rss: process.memoryUsage().rss,
-            }
+            let config = dataConfig;
             res.render('content/config', { data: config });
+        } else {
+            logger.warn(`Usuario no tiene privilegios para administrador`)
+            res.render('content/unauthorized', {
+                data: {
+                    error: -1,
+                    descripcion: 'Ruta /config no autorizada'
+                }
+            })
+        }
+    }
+
+    async ErrorLog(req,res) {
+        if (req.query.admin) {
+            let data = await readFileLog('error.log');
+            // console.log(data);
+            res.render('content/errLog', { data: data });
+        } else {
+            logger.warn(`Usuario no tiene privilegios para administrador`)
+            res.render('content/unauthorized', {
+                data: {
+                    error: -1,
+                    descripcion: 'Ruta /config no autorizada'
+                }
+            })
+        }
+    }
+
+    async WarningLog(req,res) {
+        if (req.query.admin) {
+            logger.info("Usuario revisa configuración de sistema")
+            let data = await readFileLog('warning.log');
+            // console.log(data);
+            res.render('content/warnLog', { data: data });
         } else {
             logger.warn(`Usuario no tiene privilegios para administrador`)
             res.render('content/unauthorized', {
