@@ -1,9 +1,9 @@
 const nodemailer = require('nodemailer');
-require('dotenv').config();
-const admin = process.env.EMAIL_NODEMAILER || 'iliana@carpetres.cl'
+const { twilio_key, twilio_sid, email } = require('../../config')
+const admin = email || 'iliana@carpetres.cl'
 
-const accountSid = process.env.TWILIO_SID;
-const authToken = process.env.TWILIO_KEY;
+const accountSid = twilio_sid;
+const authToken = twilio_key;
 const client = require('twilio')(accountSid, authToken);
 
 //EThereal
@@ -345,7 +345,7 @@ const sendMailRegistration = async function (data) {
   };
 
   transporter.sendMail(mailOptions, function (error, info) {
-    console.log("correo", error, info)
+    // console.log("correo", error, info)
     if (error) {
       return error
     } else {
@@ -355,7 +355,7 @@ const sendMailRegistration = async function (data) {
 }
 
 const sendMailShop = async function (orden, usuario) {
-  console.log(orden, usuario)
+  // console.log(orden, usuario)
   let productosArr = '';
   orden.productos.forEach(producto => {
     let prodHTML = `<p><b>Producto:</b> ${producto.title} - ${producto.price} - ${producto.quantity}</p>`
@@ -399,7 +399,7 @@ const sendMailShop = async function (orden, usuario) {
   };
 
   transporter.sendMail(mailOptions, function (error, info) {
-    console.log("correo", error, info)
+    // console.log("correo", error, info)
     if (error) {
       return error
     } else {

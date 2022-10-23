@@ -1,5 +1,5 @@
 require('dotenv').config();
-
-let dataDB = process.env.DAO || 'mongodbAtlas'
+const { dao } = require('../../config');
+let dataDB = dao || 'mongodbAtlas'
 
 module.exports = dataDB;

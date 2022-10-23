@@ -1,5 +1,6 @@
 const express = require('express');
 require('dotenv').config();
+const { mongo_user, mongo_cluster, mongo_database } = require('../../../config')
 
 const mongodb = {
 	cnxStr: 'mongodb://localhost:27017/tienda-paris',
@@ -11,7 +12,7 @@ const mongodb = {
 };
 
 const mongodbU = {
-	cnxStr: `mongodb+srv://${process.env.MONGO_ATLAS_USER}@${process.env.MONGO_ATLAS_CLUSTER}/${process.env.MONGO_DATABASE}`,
+	cnxStr: `mongodb+srv://${mongo_user}@${mongo_cluster}/${mongo_database}`,
 	options: {
 		useNewUrlParser: true,
 		useUnifiedTopology: true,

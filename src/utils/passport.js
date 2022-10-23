@@ -23,7 +23,7 @@ passport.use('authentication', new LocalStrategy((username, password, callback) 
 		email: username,
 		password: password
 	}
-	console.log(usuario)
+	// console.log(usuario)
     usuariosDao.loginUser(usuario).then((result) => {
 		// console.log(result)
         if (result === undefined) {

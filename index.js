@@ -3,6 +3,7 @@ require('dotenv').config();
 const cluster = require('cluster');
 const app = require('./src/utils/expressInit')
 const os = require('os');
+const { mode, server_port, } = require('./config')
 
 const server = http.createServer(app);
 //Websocket
@@ -15,15 +16,15 @@ ioServer.on("connection", async (socket) => ioCont.websocketController(socket, i
 //PUERTO
 const minimist = require('minimist');
 const minimistArg = minimist(process.argv, { alias: {'p': 'port'}});
-const port = minimistArg.port || process.env.PORT || 3000;
-const mode = process.env.MODE || 'FORK';
+const port = minimistArg.port || server_port || 3000;
+const modeServer = mode || 'FORK';
 
 //Configuracion PID
 const numeroCpus = os.cpus().length;
 const processId = process.pid;
 const isMaster = cluster.isMaster;
 
-if (isMaster && mode === 'CLUSTER') {
+if (isMaster && modeServer === 'CLUSTER') {
    for (let i = 0; i < numeroCpus; i++) {
      cluster.fork();
    }

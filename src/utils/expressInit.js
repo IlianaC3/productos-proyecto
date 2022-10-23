@@ -1,5 +1,5 @@
 const express = require('express');
-require('dotenv').config();
+const { session_time, secret_key,  } = require('../../config')
 const app = express();
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
@@ -10,17 +10,15 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(express.json({limit: '10mb'}))
 app.use(cookieParser())
 
-console.log(process.env.SESSION_TIME)
-
 //SESSION
 app.use(session({
 	store: MongoStore.create({ mongoUrl: mongodbU.cnxStr }),
-	secret: process.env.SECRET_KEY,
+	secret: secret_key,
 	resave: true,
 	saveUninitialized: false,
 	rolling: true,
 	cookie: {
-		maxAge: parseInt(process.env.SESSION_TIME) || 60000
+		maxAge: parseInt(session_time) || 60000
 	}
 }))
 

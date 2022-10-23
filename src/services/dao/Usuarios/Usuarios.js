@@ -37,7 +37,7 @@ class Contenedor {
                     isAdmin: false
                 };
                 let doc = await this.coleccion.create(userObject);
-                console.log("doc", doc)
+                // console.log("doc", doc)
                 doc = parseJSON(doc)
                 //envio de mensaje
                 const sendMail = await nodemailer.sendMailRegistration(userObject)
@@ -53,11 +53,11 @@ class Contenedor {
 
     async loginUser(usuario) {
         try {
-            console.log("llega aqui")
+            // console.log("llega aqui")
             connectionFinal();
-            console.log(usuario)
+            // console.log(usuario)
             const docs = await this.coleccion.findOne({ 'email': usuario.email }, { __v: 0 })
-            console.log(docs)
+            // console.log(docs)
             // docs = docs.map(parseJSON);
             let hash = docs.password;
             // console.log(docs.password, usuario.password);
@@ -83,7 +83,7 @@ class Contenedor {
         try {
             connectionFinal();
             const docs = await this.coleccion.findOne({ 'email': user }, { __v: 0 })
-            console.log(docs)
+            // console.log(docs)
             docs = docs.map(parseJSON)
             docs = docs.map(d => renameField(d, '_id', 'id'));
             let result = docs[0]

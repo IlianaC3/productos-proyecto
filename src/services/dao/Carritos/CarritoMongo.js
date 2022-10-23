@@ -12,7 +12,7 @@ class Contenedor {
         try {
             connectionFinal();
             let docs = await this.coleccion.find({ 'user': `${user}`, 'comprado': comprado}, { __v: 0 }).lean();
-            console.log(docs)
+            // console.log(docs)
             docs = docs.map(parseJSON)
             docs = docs.map(d => renameField(d, '_id', 'id'));
             
@@ -30,7 +30,7 @@ class Contenedor {
             connectionFinal();
             const Producto = await collProducto.find({ '_id': product.id_prod }, { __v: 0 });
             const usuarioInfo = await collUsuarios.find({ 'email': user.email }, { __v: 0 });
-            console.log(usuarioInfo)
+            // console.log(usuarioInfo)
             if(product.cantidad > Producto[0].stock) {
                 return "La cantidad ingresada es superior al stock disponible";
             } else {
@@ -50,10 +50,10 @@ class Contenedor {
                     comprado: false,
                     productos: [newPr]
                 }
-                console.log(object)
+                // console.log(object)
                 let doc = await this.coleccion.create(object);
                 doc = parseJSON(doc)
-                console.log(doc)
+                // console.log(doc)
                 renameField(doc, '_id', 'id')
                 removeField(doc, '__v')
                 return "Carrito guardado con el id " + doc.id
@@ -163,7 +163,7 @@ class Contenedor {
                 docs[0].productos.forEach(product => {
                     total = parseFloat(total) + (parseFloat(product.price)*parseInt(product.quantity));
                 });
-                console.log(docs[0].direccion)
+                // console.log(docs[0].direccion)
                 let orden = {
                     timestamp: new Date(),
                     user: user[0].email,
@@ -176,7 +176,7 @@ class Contenedor {
                 let doc = await collOrdenes.create(orden);
                 //OBJETO COMPRADO AHORA PROCEDO A ENVIAR CORREO Y MENSAJE
                 //FUNCION CORREO
-                console.log(doc)
+                // console.log(doc)
                 if (doc) {
                     docs[0].productos.forEach(async product => {
                         const Producto = await collProducto.find({ '_id': product.id }, { __v: 0 })
@@ -215,7 +215,7 @@ class Contenedor {
         try {
             connectionFinal();
             let docs = await collOrdenes.find({ 'user': `${user}`}, { __v: 0 }).lean();
-            console.log(docs)
+            // console.log(docs)
             docs = docs.map(parseJSON)
             docs = docs.map(d => renameField(d, '_id', 'id'));
             
@@ -232,7 +232,7 @@ class Contenedor {
         try {
             connectionFinal();
             let docs = await collOrdenes.find({}, { __v: 0 }).lean()
-            console.log(docs)
+            // console.log(docs)
             docs = docs.map(parseJSON)
             docs = docs.map(d => renameField(d, '_id', 'id'));
             

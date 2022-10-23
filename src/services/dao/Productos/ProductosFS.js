@@ -92,10 +92,10 @@ class Contenedor {
 
     async deleteById(id) {
         try {
-            console.log("este es el id", id);
+            // console.log("este es el id", id);
             let findId = await readFile(this.nameFile);
             this.productosArr = JSON.parse(findId);
-            console.log(this.productosArr);
+            // console.log(this.productosArr);
             let result = await findIndexFunction(this.productosArr, id);
             if (result > -1) {
                 this.productosArr.splice(result, 1);

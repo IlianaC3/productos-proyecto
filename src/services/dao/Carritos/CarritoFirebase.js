@@ -100,7 +100,7 @@ class Contenedor {
 
     async deleteProductById(id, id_prod) {
         try {
-            console.log(id, id_prod)
+            // console.log(id, id_prod)
             let newArray = [];
             const docs = await collCarFirebase.doc(id).get();
             const data = docs.data();

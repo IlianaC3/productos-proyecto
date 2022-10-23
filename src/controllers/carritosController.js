@@ -35,7 +35,7 @@ class CarritoController {
             id_prod,
             cantidad
         }
-        console.log(nuevoProducto)
+        // console.log(nuevoProducto)
         if (cantidad != '' && cantidad > 0) {
             carritosDao.save(nuevoProducto, user).then(result => {
                 if (result !== undefined) {
@@ -113,7 +113,7 @@ class CarritoController {
             cantidad
         }
         if (cantidad != '' && cantidad > 0) {
-            console.log("editar carrito", editarCarrito)
+            // console.log("editar carrito", editarCarrito)
             let user = req.user;
             carritosDao.addProductsById(id, editarCarrito, user.email).then(result => {
                 // console.log(result)
@@ -143,7 +143,7 @@ class CarritoController {
         let id = req.params.id;
         let user = req.user;
         usuariosDao.findUser(user.email).then(resultU => {
-            console.log(resultU)
+            // console.log(resultU)
             carritosDao.comprarCarrito(id, resultU).then(result => {
                 // console.log(result)
                 if (result !== undefined) {

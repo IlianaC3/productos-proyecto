@@ -4,8 +4,6 @@ let carritosDao
 let usuariosDao //Sólo Configuración Mongo Atlas
 let chatDao //solo config Mongo Atlas
 
-console.log(dataB)
-
 switch (dataB) {
     case 'json':
         const ProductosFS = require('./dao/Productos/ProductosFS')

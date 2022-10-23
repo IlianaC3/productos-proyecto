@@ -90,7 +90,7 @@ class Contenedor {
             } else {
                 renameField(product, '_id', 'id')
                 removeField(product, '__v')
-                console.log(product)
+                // console.log(product)
                 return `Producto editado con id: ${id}`
             }
         } catch (e) {
@@ -125,7 +125,7 @@ class Contenedor {
                 name: product.name
             }
             let doc = await this.categoria.create(object);
-            console.log("resultado", doc)
+            // console.log("resultado", doc)
             doc = parseJSON(doc)
             renameField(doc, '_id', 'id')
             removeField(doc, '__v')
@@ -159,7 +159,7 @@ class Contenedor {
             } else {
                 renameField(product, '_id', 'id')
                 removeField(product, '__v')
-                console.log(product)
+                // console.log(product)
                 return `Categoria editada con id: ${id}`
             }
         } catch (e) {

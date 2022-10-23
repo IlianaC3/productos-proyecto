@@ -1,12 +1,12 @@
-require('dotenv').config();
-const os = require('os');
+const { mode, server_port, dao, session_time, email, mongo_database } = require('../../config')
 
 const dataConfig = {
-    mode: process.env.MODE,
-    port: process.env.PORT,
-    dao: process.env.DAO,
-    session_time: process.env.SESSION_TIME,
-    email: process.env.EMAIL_NODEMAILER,
+    mode: mode,
+    port: server_port,
+    dao: dao,
+    session_time: session_time,
+    email: email,
+    database: mongo_database,
     args: process.argv,
     platform: process.platform,
     version: process.version,
