@@ -30,7 +30,7 @@ class Contenedor {
             connectionFinal();
             const Producto = await collProducto.find({ '_id': product.id_prod }, { __v: 0 });
             const usuarioInfo = await collUsuarios.find({ 'email': user.email }, { __v: 0 });
-            // console.log(usuarioInfo)
+            console.log(usuarioInfo)
             if(product.cantidad > Producto[0].stock) {
                 return "La cantidad ingresada es superior al stock disponible";
             } else {
@@ -116,7 +116,7 @@ class Contenedor {
                 }
                 newArray = docs[0].productos;
                 newArray.push(newPr);
-                const { n, nModified } = await this.coleccion.replaceOne({ '_id': id }, {'productos': newArray, 'comprado': false, 'timestamp': new Date(), 'user': `${user}`})
+                const { n, nModified } = await this.coleccion.replaceOne({ '_id': id }, {'productos': newArray, 'comprado': false, 'timestamp': new Date(), 'user': `${user}`, 'direccion': `${docs[0].direccion}`})
                 if (n == 0 || nModified == 0) {
                     return 'Error al actualizar: no encontrado';
                 } else {
@@ -155,8 +155,7 @@ class Contenedor {
             connectionFinal();
             const docs = await this.coleccion.find({ '_id': id }, { __v: 0 });
             // console.log(docs)
-            const { n, nModified } = await this.coleccion.replaceOne({ '_id': id }, {'productos': docs[0].productos, 'comprado': true, 'timestamp': new Date(), 'user': `${user[0].email}`})
-            if (n == 0 || nModified == 0 ) {
+            if (docs.length < 1) {
                 return 'Error al actualizar: no encontrado';
             } else {
                 let total = 0;
@@ -192,6 +191,7 @@ class Contenedor {
                         }
                         const { n, nModified } = await collProducto.replaceOne({ '_id': product.id }, updateProduct)
                     });
+                    const { n, nModified } = await this.coleccion.replaceOne({ '_id': id }, {'productos': docs[0].productos, 'comprado': true, 'timestamp': new Date(), 'user': `${user[0].email}`, 'direccion': `${docs[0].direccion}`})
                     const sendMail = await nodemailer.sendMailShop(orden, user[0])
                     //FUNCION MENSAJE
                     const sendMsgUser = await nodemailer.sendMsgShop(orden, user[0]);
@@ -204,7 +204,7 @@ class Contenedor {
                 
             }
         }  catch (e) {
-            logger.error(`No se puede borrar carrito ${id} por error: ${e}`)
+            logger.error(`No se puede modificar carrito ${id} por error: ${e}`)
             return undefined;
         }
         
